@@ -1,30 +1,79 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CapaEntidad;
+using CapaNegocio;
+using Newtonsoft.Json;
 
 namespace CapaAdmin.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+
+        [HttpGet]
+        public JsonResult ListarUsuarios()
         {
-            return View();
+            List<Usuario>oLista = new List<Usuario>();
+
+            oLista = new CN_Usuarios().Listar();
+
+            return Json(new { data = oLista },JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult About()
+        [HttpPost]
+        public JsonResult GuardarUsuario(Usuario objeto)
         {
-            ViewBag.Message = "Your application description page.";
+            object resultado;
+            string mensaje = string.Empty;
 
-            return View();
+
+            if (objeto.IdUsuario == 0)
+            {
+
+                objeto.FechaRegistro = DateTime.Now;
+                
+                resultado = new CN_Usuarios().Registrar(objeto,out mensaje);
+            }
+            else
+            {
+                objeto.FechaActualizacion = DateTime.Now;
+                resultado = new CN_Usuarios().Editar(objeto, out mensaje);
+            }
+
+            return Json(new {resultado = resultado, mensaje = mensaje, fechaRegistro = objeto.FechaRegistro, fechaActualizacion = objeto.FechaActualizacion }, JsonRequestBehavior.AllowGet);
+
+
+        }
+        public JsonResult EliminarUsuario(int id)
+        {
+            bool respuesta = false;
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Usuarios().Eliminar(id, out mensaje);
+
+            return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
 
-            return View();
+        [HttpGet]
+
+        public JsonResult VistaDashBoard()
+        {
+            DashBoard objeto = new CN_Reporte().VerDashBoard();
+
+            return Json(new { resultado = objeto}, JsonRequestBehavior.AllowGet);
+
         }
+
+
+
+
+
+
     }
 }

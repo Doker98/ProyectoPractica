@@ -1,0 +1,406 @@
+﻿
+@{
+    ViewBag.Title = "Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+@*<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>*@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
+
+
+<h1 class="mt-4">Usuarios</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">intro</li>
+</ol>
+
+<ol class="breadcrumb mb-4 mt-4">
+    <li class="breadcrumb-item"><a href="@Url.Action("Index","Mantenedor")">Dashboard</a></li>
+    <li class="breadcrumb-item active">Usuarios</li>
+</ol>
+
+<div class="card">
+    <div class="card-header">
+
+        <i class="fas fa-users me-1"></i> Lista de Usuarios
+    </div>
+    <div class="card-body">
+        <div class=" row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" onclick="abrirModal()">Crear Nuevo</button>
+            </div>
+        </div>
+
+        <hr />
+        <div class="table-responsive">
+            <table id="tabla" class="display cell-border" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Id Usuario</th>
+                        <th>Nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Correo</th>
+                        <th>Activo</th>
+                        <th>Fecha Registro</th>
+                        <th>Fecha Actualizacion</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light text-black">
+                <h5 class="modal-title" id="exampleModalLabel">Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <input id="txtid" type="hidden" value="0" />
+
+                    <div class="row g-2">
+
+                        <div class="col-sm-6">
+                            <label for="txtnombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="txtnombre" autocomplete="off">
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="txtapellidopaterno" class="form-label">ApellidoPaterno</label>
+                            <input type="text" class="form-control" id="txtapellidopaterno" autocomplete="off">
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="txtapellidomaterno" class="form-label">ApellidoMaterno</label>
+                            <input type="text" class="form-control" id="txtapellidomaterno" autocomplete="off">
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="txtcorreo" class="form-label">Correo</label>
+                            <input type="email" class="form-control" id="txtcorreo" placeholder="nombre@ejemplo.com" autocomplete="off">
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="cboactivo" class="form-label">Activo</label>
+                            <select id="cboactivo" class="form-select">
+                                <option disabled selected>Seleccione una opción</option>
+                                <option value="1">Si</option>
+                                <option value="0">No</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div id="mensajeError" class="alert alert-danger" role="alert">
+                                A simple danger alert—check it out!
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+                </div>
+            </form>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        var tabladata;
+        var tablaseleccionada;
+        var filaseleccionada;
+        var fechaOriginalRegistro
+
+
+
+            tabladata = $("#tabla").DataTable({
+                responsive: true,
+                ordering: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                "ajax": {
+                    url: '@Url.Action("ListarUsuarios","Home")',
+                    type: "GET",
+                    dataType: "json"
+
+                },
+
+
+                "columns": [
+                    { "data": "IdUsuario" },
+                    { "data": "Nombre" },
+                    { "data": "ApellidoPaterno" },
+                    { "data": "ApellidoMaterno" },
+                    { "data": "Correo" },
+                    {
+                        "data": "Activo", "render": function (valor) {
+                            if (valor) {
+
+                                return '<span class="badge bg-success">Si</span>'
+                            }
+                            else {
+                                return '<span class="badge bg-danger">No</span>'
+                            }
+
+                        }
+                    },
+                    {
+                        "data": "FechaRegistro", "defaultContent": "", "render": function (data, type, row) {
+                            return moment(data).format('DD-MM-YYYY HH:mm:ss');
+                        }
+                    },
+                    {
+                        "data": "FechaActualizacion", "defaultContent": "", "render": function (data, type, row) {
+                            return moment(data).format('DD-MM-YYYY HH:mm:ss');
+                        }
+                    },
+                    {
+                        "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
+                                          '<button type="button" class="btn btn-danger btn-sm ms-2 btn-eliminar"><i class="fas fa-trash"></i></button>',
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "90px"
+                    }
+                ],
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+
+            });
+
+            $('#tabla').on('length.dt', function (e, settings, len) {
+            // Mover a la primera página cuando cambia la longitud
+            tabladata.page(0).draw('page');
+            });
+
+
+            function abrirModal(json) {
+
+                $("#txtid").val(0);
+                $("#txtnombre").val("");
+                $("#txtapellidopaterno").val("");
+                $("#txtapellidomaterno").val("");
+                $("#txtcorreo").val("");
+                $("#cboactivo").val($("#cboactivo option:first").val());
+
+
+                $("#mensajeError").hide();
+
+
+
+                if (json != null) {
+
+                    $("#txtid").val(json.IdUsuario);
+                    $("#txtnombre").val(json.Nombre);
+                    $("#txtapellidopaterno").val(json.ApellidoPaterno);
+                    $("#txtapellidomaterno").val(json.ApellidoMaterno);
+                    $("#txtcorreo").val(json.Correo);
+                    $("#cboactivo").val(json.Activo == true ? 1 : 0);
+                    fechaOriginalRegistro = json.FechaRegistro;
+                }
+
+
+
+                $("#FormModal").modal("show");
+            }
+
+            $("#tabla tbody").on("click", ".btn-editar", function () {
+
+                filaSeleccionada = $(this).closest("tr");
+
+                var data = tabladata.row(filaSeleccionada).data();
+
+                abrirModal(data)
+
+            })
+
+             $("#tabla tbody").on("click", ".btn-eliminar", function () {
+
+                 var usuarioseleccionado = $(this).closest("tr");
+                 var data = tabladata.row(usuarioseleccionado).data();
+
+                 Swal.fire({
+                     title: "Esta seguro?",
+                     text: "¿Desea eliminar el usuario?",
+                     icon: "warning",
+                     showCancelButton: true,
+                     confirmButtonText:"Si",
+                     cancelButtonText: "No"
+
+
+                 }).then(function (result) {
+
+
+                     if (result.value) {
+
+                         jQuery.ajax({
+                             url: '@Url.Action("EliminarUsuario","Home")',
+                             type: "POST",
+                             data: JSON.stringify({ id: data.IdUsuario }),
+                             dataType: "json",
+                             contentType: "application/json;charset=utf-8",
+                             success: function (data) {
+                                 if (data.resultado) {
+                                     Swal.fire({
+                                         position: "end",
+                                         icon: "warning",
+                                         title: "El usuario fue eliminado",
+                                         showConfirmButton: false,
+                                         timer: 2000
+                                     });
+                                     tabladata.row(usuarioseleccionado).remove().draw();
+                                 }
+                                 else {
+                                     Swal.fire("No se pudo eliminar", data.mensaje, "error")
+                                 }
+
+
+                             },
+                             error: function (error) {
+                                 console.log(error)
+                             }
+                         });
+
+                     }
+                 });
+
+
+             })
+
+
+
+
+           function Guardar() {
+
+                var Usuario = {
+
+                    IdUsuario: $("#txtid").val(),
+                    Activo: $("#cboactivo").val() == 1 ? true : false,
+                    ApellidoMaterno: $("#txtapellidomaterno").val(),
+                    ApellidoPaterno: $("#txtapellidopaterno").val(),
+                    Correo: $("#txtcorreo").val(),
+                    Nombre: $("#txtnombre").val(),
+                    // Formatear las fechas usando moment.js
+                    FechaRegistro: moment().format('DD-MM-YYYY HH:mm:ss'),
+                    FechaActualizacion: moment().format('DD-MM-YYYY HH:mm:ss')
+
+                }
+
+                jQuery.ajax({
+                    url: '@Url.Action("GuardarUsuario", "Home")',
+                    type: "POST",
+                    data: JSON.stringify({ objeto: Usuario }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+
+                        //usuario nuevo
+                        if (Usuario.IdUsuario == 0) {
+
+
+
+                            if (data.resultado != 0) {
+
+                                Usuario.IdUsuario = data.resultado;
+                                Usuario.FechaRegistro = data.fechaRegistro;
+                                Usuario.FechaActualizacion = data.fechaActualizacion;
+                                tabladata.row.add(Usuario).draw(false);
+                                $("#FormModal").modal("hide");
+                                Swal.fire({
+                                    position: "end",
+                                    icon: "success",
+                                    title: "El usuario fue guardado con exito",
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+
+
+
+                            } else {
+                                $("#mensajeError").text(data.mensaje);
+                                $("#mensajeError").show();
+
+                            }
+
+
+                        }
+                        //editar usuario
+                        else {
+
+                            if (data.resultado) {
+                                Usuario.FechaRegistro = fechaOriginalRegistro;
+                                Usuario.FechaActualizacion = data.fechaActualizacion;
+                                console.log(Usuario);
+                                tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+                                filaseleccionada = null;
+
+                                $("#FormModal").modal("hide");
+                                Swal.fire({
+                                    position: "end",
+                                    icon: "success",
+                                    title: "La edición se guardo correctamente",
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                });
+
+                            } else {
+                                $("#mensajeError").text(data.mensaje);
+                                $("#mensajeError").show();
+                            }
+                        }
+
+                    },
+                    Error: function (data) {
+                        console.log(error)
+                    },
+                    beforeSend: function () {
+
+
+
+                    },
+
+                });
+
+
+
+           }
+            $("#FormModal").submit(function (event) {
+            // Evita la recarga de la página al enviar el formulario
+                event.preventDefault();
+                Guardar();
+            });
+
+
+
+
+    </script>
+
+
+}
