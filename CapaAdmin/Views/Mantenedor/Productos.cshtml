@@ -9,7 +9,7 @@
 
 <h1 class="mt-4">Productos</h1>
 <ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">intro</li>
+    <li class="breadcrumb-item active">En este módulo de productos podrás facilitar la gestión del inventario al permitir la creación, edición y eliminación de productos. Se pueden agregar detalles como nombre, descripción, categoría, precio y estado de activación. También se puede adjuntar una imagen representativa para cada producto. Esto simplifica la administración del inventario y mejora la visualización de los productos en el sistema.</li>
 </ol>
 
 
@@ -79,7 +79,7 @@
                     <div class="col-sm-3">
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="txtnombre" name="nombre" />
+                            <input type="text" class="form-control" id="txtnombre" name="nombre" autocomplete="off" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descripción</label>
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCerrar">Cerrar</button>
                         <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
                     </div>
                     <div class="row mt-3">
@@ -152,7 +152,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
 
 
             tabladata = $("#tabla").DataTable({
