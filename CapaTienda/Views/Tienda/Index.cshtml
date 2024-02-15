@@ -162,6 +162,10 @@
                 success: function (response) {
                     $("#contenedor_producto").html("");
 
+                    var categoriaSeleccionada = $("input[name=categoria]:checked + label").text();
+                    $("<h2>").text(categoriaSeleccionada).appendTo("#contenedor_producto");
+
+
                     $.each(response.data, function (i, element) {
 
                         $("<div>").addClass("col mb-5").append(
@@ -199,14 +203,8 @@
 
        $("#btnaplicarfiltro").click(function () {
 
-
             var _idcategoria = $("input[name=categoria]:checked").val()
             MostrarProductos(_idcategoria)
-
-
-
-
-
 
       })
 
