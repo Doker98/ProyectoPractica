@@ -109,7 +109,7 @@ namespace CapaAdmin.Controllers
 
                     if (guardar_imagen_exito)
                     {
-                        oCategoria.RutaImagen = ruta_guardar + "\\" + nombre_imagen;
+                        oCategoria.RutaImagen = nombre_imagen;
                         bool rspta = new CN_Categoria().GuardarDatosImagen(oCategoria, out mensaje);
                     }
                     else
@@ -120,7 +120,7 @@ namespace CapaAdmin.Controllers
 
             }
 
-            return Json(new { operacion_exitosa = operacion_exitosa, mensaje = mensaje, idGenerado = oCategoria.IdCategoria, fechaRegistro = oCategoria.FechaRegistro, fechaActualizacion = oCategoria.FechaActualizacion }, JsonRequestBehavior.AllowGet);
+            return Json(new { operacion_exitosa = operacion_exitosa, mensaje = mensaje, idGenerado = oCategoria.IdCategoria, rutaImagen= oCategoria.RutaImagen, fechaRegistro = oCategoria.FechaRegistro, fechaActualizacion = oCategoria.FechaActualizacion }, JsonRequestBehavior.AllowGet);
 
 
         }

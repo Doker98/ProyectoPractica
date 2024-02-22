@@ -99,9 +99,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="mb-2">
-                            <img id="img_categoria" height="197" width="200" class="border rounded mx-auto d-block img-fluid" />
-                        </div>
+                        <div class="mb-2 border rounded mx-auto d-block img-fluid" id="img_categoria" style="width: 200px; height: 200px; background-size: 100% 100%" ></div>
                         <div class="mb-2">
                             <input class="form-control" type="file" id="fileCategoria" accept="image/png, image/jpg, image/jpeg" onchange="mostrarImagen(this)" />
                         </div>
@@ -147,7 +145,8 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $("#img_categoria").attr("src", e.target.result).width(200).height(197)
+                    //$("#img_categoria").attr("src", e.target.result).width(200).height(197)
+                    $("#img_categoria").css("background-image","url('"+ e.target.result + "')");
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -186,7 +185,7 @@
                     {
                         "data": "RutaImagen",
                         "render": function (data, type, row) {
-                            return '<a href="#" class="imagen-enlace" data-imagen="' + data + '">' + data + '</a>';
+                            return '<a href="#" class="imagen-enlace" data-imagen="' + data + '"> Haz click para ver la imagen </a>';
                         }
                     },
 
@@ -221,12 +220,12 @@
             });
 
             function abrirImagenModal(nombreImagen) {
-                $("#imagenEnModal").attr("src","/Content/imagenes/" + nombreImagen);
+                $("#imagenEnModal").attr("src","/Content/imagenes/Categorias/" + nombreImagen);
                 $("#imagenModal").modal("show");
             }
 
             function abrirModal(json) {
-
+                console.log(json);
                 $("#txtid").val(json ? json.IdCategoria : 0);
                 $("#txtdescripcion").val(json ? json.Descripcion : "");
                 $("#fileImagen").val("");
@@ -237,7 +236,7 @@
 
 
 
-                if (json != null) {
+                if (json) {
 
                     $("#txtid").val(json.IdCategoria);
                     $("#txtdescripcion").val(json.Descripcion);
@@ -245,7 +244,7 @@
                     $("#cboactivo").val(json.Activo == true ? 1 : 0);
                     fechaOriginalRegistro = json.FechaRegistro;
 
-                    $("#img_categoria").attr("src", json.RutaImagen);
+                    $("#img_categoria").css("background-image", "");
 
                     jQuery.ajax({
                         url: '@Url.Action("ImagenCategoria", "Mantenedor")',
@@ -254,8 +253,10 @@
                         dataType: "json",
                         contentType: "application/json;charset=utf-8",
                         success: function (data) {
+                            
                             if (data.conversion) {
-                                $("#img_categoria").attr({ "src":"data:image/" + data.extension + ";Base64," + data.textoBase64});
+                                console.log(data);
+                                $("#img_categoria").css("background-image", "url('data:image/" + data.extension + ";Base64," + data.textoBase64 + "')" );
                             }
                         },
                         error: function (error) {
@@ -268,13 +269,9 @@
                     });
 
 
+                } else {
 
-
-
-
-
-
-
+                    $("#img_categoria").css("background-image","");
                 }
 
 
@@ -400,6 +397,7 @@
                                 Categoria.IdCategoria = data.idGenerado;
                                 Categoria.FechaRegistro = data.fechaRegistro;
                                 Categoria.FechaActualizacion = data.fechaActualizacion;
+                                Categoria.RutaImagen = data.rutaImagen;
                                 tabladata.row.add(Categoria).draw(false);
                                 $("#FormModal").modal("hide");
                                 Swal.fire({

@@ -69,8 +69,7 @@
 
                 <form id="contenedor" class="row">
                     <div class="col-sm-3">
-                        <div class="mb-2">
-                            <img id="img_producto" height="197" width="200" class="border rounded mx-auto d-block img-fluid" />
+                        <div class="mb-2  border rounded mx-auto d-block img-fluid" id="img_producto" style="width: 200px; height: 200px; background-size: 100% 100%">                   
                         </div>
                         <div class="mb-2">
                             <input class="form-control" type="file" id="fileProducto" accept="image/png, image/jpg, image/jpeg" onchange="mostrarImagen(this)" />
@@ -147,7 +146,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    $("#img_producto").attr("src",e.target.result).width(200).height(197)
+                    $("#img_producto").css("background-image", "url('" + e.target.result + "')");
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -279,7 +278,7 @@
 
                 $("#mensajeError").hide();
 
-                if (json != null) {
+                if (json) {
 
                     $("#txtid").val(json.IdProducto);
                     $("#txtnombre").val(json.Nombre);
@@ -289,7 +288,7 @@
                     $("#cboactivo").val(json.Activo == true ? 1 : 0);
                     fechaOriginalRegistro = json.FechaRegistro;
 
-                    $("#img_producto").attr("src", json.RutaImagen);
+                    $("#img_producto").css("background-image", "");
 
                     jQuery.ajax({
                         url: '@Url.Action("ImagenProducto", "Mantenedor")',
@@ -299,7 +298,7 @@
                         contentType: "application/json;charset=utf-8",
                         success: function (data) {
                             if (data.conversion) {
-                                $("#img_producto").attr({ "src":"data:image/" + data.extension + ";Base64," + data.textoBase64});
+                                $("#img_producto").css("background-image", "url('data:image/" + data.extension + ";Base64," + data.textoBase64 + "')");
                             }
                         },
                         error: function (error) {
@@ -311,6 +310,8 @@
                         },
                     });
 
+                } else {
+                    $("#img_producto").css("background-image", "");
                 }
 
 

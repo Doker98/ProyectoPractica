@@ -18,6 +18,23 @@ namespace CapaTienda.Controllers
             return View();
         }
 
+        public ActionResult DetalleProducto(int idproducto = 0)
+        {
+            Producto oProducto = new Producto();
+            bool conversion;
+
+            oProducto = new CN_Producto().Listar().Where(p => p.IdProducto == idproducto).FirstOrDefault();
+
+            if (oProducto != null)
+            {
+                oProducto.Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen), out conversion);
+                
+            }
+
+
+            return View(oProducto);
+        }
+
         [HttpGet]
 
         public JsonResult ListaCategorias()
