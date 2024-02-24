@@ -120,6 +120,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccesoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MantenedorController.cs" />
     <Compile Include="Global.asax.cs">
@@ -486,6 +487,7 @@
     <Content Include="Views\Mantenedor\Usuarios.cshtml" />
     <Content Include="Views\Mantenedor\Categorias.cshtml" />
     <Content Include="Views\Mantenedor\Productos.cshtml" />
+    <Content Include="Views\Acceso\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -522,7 +524,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50714</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44367/</IISUrl>
+          <IISUrl>https://localhost:44367</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

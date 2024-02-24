@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -50,6 +51,7 @@ namespace CapaNegocio
             {
 
                 string clave = CN_Recursos.GenerarClave();
+                
 
                 string asunto = "Creaccion de Cuenta";
                 string mensaje_correo = "<h3> cuenta fue creada Correctamente</h3></br><p>Su contraseña para acceder es: !clave!</p>";
@@ -59,8 +61,8 @@ namespace CapaNegocio
                 
                 if (respuesta)
                 {
-                    
-                    
+
+                    obj.Clave = CN_Recursos.ConvertirSha256(clave);
                     return objCapaDato.Registrar(obj, out Mensaje);
                     
 
@@ -128,6 +130,48 @@ namespace CapaNegocio
 
         }
 
+
+        public bool CambiarClave(int idusuario, string nuevaclave, out string Mensaje)
+        {
+
+            return objCapaDato.CambiarClave(idusuario,nuevaclave, out Mensaje);
+
+        }
+
+
+        public bool ReestablecerClave(int idusuario,string correo, out string Mensaje)
+        {
+            Mensaje = string.Empty;
+            string nuevaclave = CN_Recursos.GenerarClave();
+            bool resultado = objCapaDato.ReestablecerClave(idusuario,CN_Recursos.ConvertirSha256(nuevaclave), out Mensaje);
+
+            if (resultado)
+            {
+                string asunto = "Contraseña Reestablecida";
+                string mensaje_correo = "<h3> Su cuenta fue reestablecida Correctamente</h3></br><p>Su contraseña para acceder ahora es: !clave!</p>";
+                mensaje_correo = mensaje_correo.Replace("!clave!", nuevaclave);
+
+                bool respuesta = CN_Recursos.EnviarCorreo(correo, asunto, mensaje_correo);
+
+
+                if (respuesta)
+                {
+                    return true;
+                }
+                else
+                {
+                    Mensaje = "No se pudo enviar el correo";
+                    return false;
+                }
+            }
+            else 
+            {
+                Mensaje = "No se pudo reestablecer la contraseña";
+                return false; 
+            }
+
+
+        }
 
 
     }

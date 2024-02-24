@@ -17,26 +17,28 @@ namespace CapaAdmin.Controllers
     public class MantenedorController : Controller
     {
         // GET: Mantenedor
-        
+        [Route("Productos")]
+        public ActionResult Productos()
+        {
+            return View();
+        }
 
-        [Route("Mantenedor/Usuarios")]
+        [Route("Usuarios")]
         public ActionResult Usuarios()
         {
             
             return View();
         }
 
+        [Route("Categorias")]
         public ActionResult Categorias()
         {
             return View();
         }
 
-        public ActionResult Productos()
-        {
-            return View();
-        }
 
-        [Route("Mantenedor")]
+
+        [Route("")]
         public ActionResult Index()
         {
             
@@ -169,14 +171,14 @@ namespace CapaAdmin.Controllers
       
             decimal precio;
 
-            if (decimal.TryParse(oProducto.PrecioTexto,System.Globalization.NumberStyles.AllowDecimalPoint,new CultureInfo("es-CL"),out precio))
+            if (decimal.TryParse(oProducto.PrecioTexto,System.Globalization.NumberStyles.Currency,new CultureInfo("es-CL"),out precio))
             {
                 oProducto.Precio = precio;
 
             }
             else
             {
-                return Json(new { operacionExitosa = false, mensaje = "El formato del precio debe ser ##.##"},JsonRequestBehavior.AllowGet);
+                return Json(new { operacionExitosa = false, mensaje = "El formato del precio debe ser ######"},JsonRequestBehavior.AllowGet);
             }
 
 
