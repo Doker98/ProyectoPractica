@@ -21,5 +21,7 @@ namespace CapaEntidad
         public DateTime FechaRegistro { get; set; }
 
         public DateTime FechaActualizacion { get; set; }
+
+
     }
 }

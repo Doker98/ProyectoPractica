@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
 using System.Drawing;
 using System.IO;
 using Newtonsoft.Json;
@@ -17,20 +16,20 @@ namespace CapaAdmin.Controllers
     public class MantenedorController : Controller
     {
         // GET: Mantenedor
-        [Route("Productos")]
+        [Route("Mantenedor/Productos")]
         public ActionResult Productos()
         {
             return View();
         }
 
-        [Route("Usuarios")]
+        [Route("Mantenedor/Usuarios")]
         public ActionResult Usuarios()
         {
             
             return View();
         }
 
-        [Route("Categorias")]
+        [Route("Mantenedor/Categorias")]
         public ActionResult Categorias()
         {
             return View();
@@ -38,7 +37,7 @@ namespace CapaAdmin.Controllers
 
 
 
-        [Route("")]
+        [Route("Mantenedor")]
         public ActionResult Index()
         {
             

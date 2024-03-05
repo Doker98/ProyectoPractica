@@ -145,7 +145,6 @@
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    //$("#img_categoria").attr("src", e.target.result).width(200).height(197)
                     $("#img_categoria").css("background-image","url('"+ e.target.result + "')");
                 }
                 reader.readAsDataURL(input.files[0]);
@@ -346,7 +345,6 @@
 
 
             $('#tabla').on('length.dt', function (e, settings, len) {
-                // Mover a la primera página cuando cambia la longitud
                 tabladata.page(0).draw('page');
             });
 
@@ -367,7 +365,6 @@
                     IdCategoria: $("#txtid").val(),
                     Descripcion: $("#txtdescripcion").val(),
                     Activo: $("#cboactivo").val() == 1 ? true : false,
-                    //RutaImagen: $("#fileImagen").val().split('\\').pop(),
                     FechaRegistro: moment().format('DD-MM-YYYY HH:mm:ss'),
                     FechaActualizacion: moment().format('DD-MM-YYYY HH:mm:ss')
 
