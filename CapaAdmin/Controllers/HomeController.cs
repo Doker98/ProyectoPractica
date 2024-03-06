@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 namespace CapaAdmin.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
 

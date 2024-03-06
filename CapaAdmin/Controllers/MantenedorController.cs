@@ -13,6 +13,7 @@ using System.Configuration;
 
 namespace CapaAdmin.Controllers
 {
+    [Authorize]
     public class MantenedorController : Controller
     {
         // GET: Mantenedor
