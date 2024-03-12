@@ -35,3 +35,61 @@
     </div>
 </section>
 
+@section scripts{
+    
+    <script>
+
+        $(document).on("click", "button.agregarcarrito", function () {
+
+
+            jQuery.ajax({
+                url: '@Url.Action("AgregarCarrito", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idproducto: $(this).data("idproducto") }),
+                dataType: "json",
+                contentType: "application/json; charset=utf -8",
+                success: function (data) {
+
+                    if (data.respuesta) {
+
+                        MostrarCantidadCarrito();
+
+                        Swal.fire({
+                            title: "Agregado al carrito",
+                            text: "",
+                            icon: "success",
+                            timer: 1500, // Redireccionar después de 1.5 segundos
+                            showConfirmButton: false
+                        }) @*function () {
+
+                            window.location.href = '@Url.Action("Carrito","Tienda")'
+
+
+
+                        })*@
+                    }else {
+                            Swal.fire("", data.mensaje, "error")
+                        }
+
+                   }
+            })
+
+        })
+
+
+
+
+
+
+
+
+    </script>    
+    
+    
+    
+    
+    
+    
+    
+}
+

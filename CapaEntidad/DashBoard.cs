@@ -9,7 +9,7 @@ namespace CapaEntidad
     public class DashBoard
     {
         //public int Totalrecaudado {  get; set; }
-        //public int TotalVenta {  get; set; }
+        public int TotalVenta {  get; set; }
         public int TotalProducto {  get; set; }
     }
 }

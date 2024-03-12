@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CapaEntidad;
 using CapaNegocio;
+using ClosedXML.Excel;
 using Newtonsoft.Json;
 
 namespace CapaAdmin.Controllers
@@ -61,6 +64,26 @@ namespace CapaAdmin.Controllers
         }
 
 
+
+        [HttpGet]
+
+        public JsonResult ListaReporte(string fechainicio, string fechafin)
+        {
+            List<Reporte> oLista = new List<Reporte>();
+
+
+
+
+            oLista = new CN_Reporte().Ventas(fechainicio,fechafin);
+
+            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+
+
         [HttpGet]
 
         public JsonResult VistaDashBoard()
@@ -71,7 +94,58 @@ namespace CapaAdmin.Controllers
 
         }
 
+        [HttpPost]
 
+        public FileResult ExportarVenta(string fechainicio, string fechafin)
+        {
+            List<Reporte> oLista =new List<Reporte>();
+            oLista = new CN_Reporte().Ventas(fechainicio, fechafin);
+
+            DataTable dt = new DataTable();
+
+            
+            dt.Columns.Add("IdVenta", typeof(int));
+            dt.Columns.Add("Fecha Venta", typeof(DateTime));
+            dt.Columns.Add("Cliente", typeof(string));
+            dt.Columns.Add("Rut Cliente", typeof(string));
+            dt.Columns.Add("Email", typeof(string));
+            dt.Columns.Add("Descripcion Compra", typeof(string));
+            dt.Columns.Add("Cantidad", typeof(int));
+            dt.Columns.Add("Monto", typeof(decimal));
+            dt.Columns.Add("Id Transacción", typeof(string));
+
+
+            foreach (Reporte rp in oLista)
+            {
+                dt.Rows.Add(new object[]
+                {
+                    rp.IdVenta,
+                    rp.Fecha_Venta,
+                    rp.Cliente,
+                    rp.Rut_Cliente,
+                    rp.Email,
+                    rp.Descripcion_compra,
+                    rp.Cantidad,
+                    rp.Monto,
+                    rp.Transaction_id
+                });
+            }
+
+            dt.TableName = "Datos";
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using(MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","ReporteVenta" + DateTime.Now.ToString() + ".xlsx");
+                }
+
+            }
+
+        }
 
 
 

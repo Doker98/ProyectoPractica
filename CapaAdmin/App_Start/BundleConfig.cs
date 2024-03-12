@@ -18,6 +18,7 @@ namespace CapaAdmin
                       "~/Scripts/DataTables/dataTables.responsive.js",
                       "~/Scripts/sweetalert.min.js",
                       "~/Scripts/jquery.validate.js",
+                      "~/Scripts/jquery-ui-1.13.2.js",
                       "~/Scripts/scripts.js"));
 
 
@@ -37,7 +38,9 @@ namespace CapaAdmin
                 "~/Content/site.css",
                 "~/Content/DataTables/css/jquery.dataTables.css",
                 "~/Content/DataTables/css/responsive.dataTables.css",
-                "~/Content/sweetalert.css"
+                "~/Content/sweetalert.css",
+                "~/Content/themes/base/jquery-ui.css",
+                "~/Content/themes/base/datepicker.css"
 
                 ));
         }

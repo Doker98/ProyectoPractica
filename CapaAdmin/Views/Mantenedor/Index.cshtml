@@ -1,7 +1,9 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />
 <h1 class="mt-4">Dashboard</h1>
 <ol class="breadcrumb mb-4">
     <li class="breadcrumb-item active">Bienvenido al sistema de administración de "Perla", en este módulo de dashboard podrá visualizar lo recaudado del día, la cantidad de ventas totales y tener un control de la cantidad de productos que tiene disponible. Además de tener un historial de ventas con sus respectivos detalles donde tambien podrá exportar los datos a una tabla de excel haciendo click en el boton de "exportar".</li>
@@ -62,7 +64,7 @@
         Historial de Ventas
     </div>
     <div class="card-body">
-        <form>
+        <form action="@Url.Action("ExportarVenta","Home")" method="post">
             <div class="row align-items-end">
                 <div class="col-sm-2">
                     <div class="mb-2">
@@ -103,11 +105,14 @@
                 <table id="tabla" class="display cell-border" style="width:100%">
                     <thead>
                         <tr>
+                            <th>IdVenta</th>
                             <th>Fecha Venta</th>
                             <th>Cliente</th>
-                            <th>Producto</th>
+                            <th>Rut Cliente</th>
+                            <th>Email</th>
+                            <th>Descripcion Compra</th>
                             <th>Cantidad</th>
-                            <th>Total</th>
+                            <th>Monto</th>
                             <th>Id Transacción</th>
                         </tr>
                     </thead>
@@ -120,9 +125,13 @@
 </div>
 
 @section scripts{
-    
+
     <script>
 
+        var tabladata;
+
+        $("#txtfechainicio").datepicker({dateFormat : 'dd/mm/yy'}).datepicker('setDate',new Date());
+        $("#txtfechafin").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date());
 
         jQuery.ajax({
             url: '@Url.Action("VistaDashBoard", "Home")',
@@ -134,29 +143,76 @@
                 var objeto = data.resultado;
 
                 //$("#totaldia").text(objeto.Totalrecaudado)
-                //$("#totalventa").text(objeto.TotalVenta)
+                $("#totalventa").text(objeto.TotalVenta)
                 $("#totalproducto").text(objeto.TotalProducto)
-                
-                
+
+
             }
         });
+
+            var Url = '@Url.Action("ListaReporte", "Home")' +
+            "?fechainicio=" + $("#txtfechainicio").val() +
+            "&fechafin=" + $("#txtfechafin").val() 
+
+            tabladata = $("#tabla").DataTable({
+                responsive: true,
+                ordering: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                "ajax": {
+                    url: Url,
+                    type: "GET",
+                    dataType: "json"
+
+                },
+                "columns": [
+                    { "data": "IdVenta" },
+                    { "data": "Fecha_Venta" },
+                    { "data": "Cliente" },
+                    { "data": "Rut_Cliente" },
+                    { "data": "Email" },
+                    { "data": "Descripcion_compra" },
+                    { "data": "Cantidad" },
+                    { "data": "Monto" },
+                    { "data": "Transaction_id" }
+                ],
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+
+            });
+
+
+
+        $("#btnbuscar").on("click", function () {
+
+            var nueva_url = '@Url.Action("ListaReporte", "Home")' +
+            "?fechainicio=" + $("#txtfechainicio").val() +
+            "&fechafin=" + $("#txtfechafin").val() 
+            console.log(nueva_url);
+
+            tabladata.ajax.url(nueva_url).load();
+
+        })
+
 
 
 
 
     </script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
