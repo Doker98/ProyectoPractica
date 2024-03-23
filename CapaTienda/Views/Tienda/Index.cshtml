@@ -198,7 +198,7 @@
                                 $("<div>").addClass("card-body p-4").append(
                                     $("<div>").addClass("text-center").append(
                                         $("<h5>").addClass("fw-bolder").text(element.Nombre),
-                                        "$ " + element.Precio.toFixed(0) + " CLP"
+                                        $("<span>").addClass("fw-bolder").text(element.Precio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' }))
                                     )
 
                                 ),

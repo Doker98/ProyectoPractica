@@ -93,8 +93,8 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("select COUNT(*) from CARRITO_PRODUCTO where IdCarrito = @idcliente", oconexion);
-                    cmd.Parameters.AddWithValue("@idcliente", idcarrito);
+                    SqlCommand cmd = new SqlCommand("select SUM(Cantidad) from CARRITO_PRODUCTO where IdCarrito = @idcarrito", oconexion);
+                    cmd.Parameters.AddWithValue("@idcarrito", idcarrito);
                     cmd.CommandType = CommandType.Text;
                     oconexion.Open();
                     resultado = Convert.ToInt32(cmd.ExecuteScalar());
@@ -108,6 +108,62 @@ namespace CapaDatos
             }
             return resultado;
 
+
+        }
+
+        public List<Carrito_Producto> ListarProducto(int idcliente)
+        {
+
+            List<Carrito_Producto> lista = new List<Carrito_Producto>();
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
+                {
+                    string query = "select * from fn_obtenerCarritoCliente(@idcliente)";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@idcliente", idcliente);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new Carrito_Producto()
+                            {
+                                oProducto = new Producto()
+                                {
+                                    IdProducto = Convert.ToInt32(dr["IdProducto"]),
+                                    Nombre = dr["Nombre"].ToString(),
+                                    Precio = Convert.ToDecimal(dr["Precio"]),
+
+
+
+
+
+                                },
+
+
+                                Cantidad = Convert.ToInt32(dr["Cantidad"])
+
+
+
+
+                            }) ;
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                lista = new List<Carrito_Producto>();
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return lista;
 
         }
 

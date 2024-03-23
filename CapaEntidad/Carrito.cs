@@ -16,5 +16,6 @@ namespace CapaEntidad
         public string Celular { get; set; }
         public string Estado { get; set; }
 
+        public Producto Producto { get; set; }
     }
 }
