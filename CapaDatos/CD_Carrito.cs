@@ -167,10 +167,43 @@ namespace CapaDatos
 
         }
 
+        public bool EliminarCarrito(int idcarrito, int idproducto)
+        {
+            bool resultado = true;
+
+            try
+            {
+
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_EliminarCarrito", oconexion);
+                    cmd.Parameters.AddWithValue("IdCliente", idcarrito);
+                    cmd.Parameters.AddWithValue("IdProducto", idproducto);
+                    cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    oconexion.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
 
 
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
 
-    }
+
+            }
+            return resultado;
+
+
+        }
+
+
+     }
 
 
 

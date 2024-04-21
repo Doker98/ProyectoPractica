@@ -126,6 +126,75 @@ namespace CapaTienda.Controllers
         }
 
 
+        [HttpPost]
+
+        public JsonResult ListarProductosCarrito()
+        {
+            Carrito carrito = Session["IdCarrito"] as Carrito;
+            int idcliente = 0;
+
+            List<Carrito_Producto> oLista = new List<Carrito_Producto>();
+
+            bool conversion;
+
+            oLista = new CN_Carrito().ListarProducto(idcliente).Select(oc=> new Carrito_Producto()
+            {
+                oProducto = new Producto()
+                {
+                    IdProducto = oc.oProducto.IdProducto,
+                    Nombre = oc.oProducto.Nombre,
+                    Precio = oc.oProducto.Precio,
+                    
+                },
+                Cantidad = oc.Cantidad
+
+
+            }).ToList();
+
+            return Json (new {data = oLista}, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public JsonResult OperacionCarrito(int idproducto, bool sumar)
+        {
+
+            Carrito carrito = Session["IdCarrito"] as Carrito;
+            int idcarrito = 0; // Valor por defecto o manejo de error
+
+            bool respuesta = false;
+
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Carrito().OperacionCarrito(idcarrito, idproducto, true, out mensaje);
+
+
+            return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        [HttpPost]
+
+        public JsonResult EliminarCarrito(int idproducto) 
+        {
+            Carrito carrito = Session["IdCarrito"] as Carrito;
+            int idcarrito = 0; // Valor por defecto o manejo de error
+
+            bool respuesta = false;
+
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Carrito().EliminarCarrito(idcarrito, idproducto);
+
+            return Json(new {respuesta = respuesta,mensaje = mensaje}, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult Carrito() { 
+            return View();
+
+        }
 
     }
 }
